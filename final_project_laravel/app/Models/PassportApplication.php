@@ -14,12 +14,21 @@ class PassportApplication extends Model
     protected $fillable = [
         'user_id',
         'branch_id',
+        'pickup_branch_id',
         'serial_number',
         'national_id',
         'full_name',
+        'mother_name',
+        'date_of_birth',
+        'gender',
+        'address',
         'status',
         'photo_path',
         'tracking_number'
+    ];
+
+    protected $casts = [
+        'date_of_birth' => 'date',
     ];
 
     public function user(): BelongsTo
@@ -30,6 +39,11 @@ class PassportApplication extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function pickupBranch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'pickup_branch_id');
     }
 
     public function statusUpdates(): HasMany

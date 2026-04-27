@@ -29,8 +29,11 @@ class SearchService
     public function findForInquiry(string $identifier)
     {
         return PassportApplication::where('tracking_number', $identifier)
+            ->orWhere('serial_number', $identifier)
             ->orWhere('national_id', $identifier)
-            ->with(['branch', 'statusUpdates.updater'])
+            ->with(['branch', 'pickupBranch', 'statusUpdates' => function ($query) {
+                $query->latest();
+            }, 'statusUpdates.updater'])
             ->first();
     }
 }

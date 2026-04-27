@@ -22,9 +22,14 @@ class PassportApplicationFactory extends Factory
         return [
             'user_id' => User::factory(),
             'branch_id' => Branch::factory(),
+            'pickup_branch_id' => Branch::factory(),
             'serial_number' => 'SER-' . strtoupper(Str::random(8)),
             'national_id' => $this->faker->numerify('##########'),
             'full_name' => $this->faker->name,
+            'mother_name' => $this->faker->name('female'),
+            'date_of_birth' => $this->faker->date('Y-m-d', '-18 years'),
+            'gender' => $this->faker->randomElement(['male', 'female']),
+            'address' => $this->faker->address,
             'status' => $this->faker->randomElement(['pending', 'processing', 'ready', 'collected']),
             'tracking_number' => 'TRK-' . strtoupper(Str::random(10)),
         ];

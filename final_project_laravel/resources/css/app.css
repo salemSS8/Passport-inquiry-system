@@ -1,11 +1,456 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+:root {
+    /* Color Palette - Figma Exact Tokens */
+    --primary: #1A3B5C; /* Biscay */
+    --accent: #c8a55f;  /* Figma Gold */
+    --accent-hover: #b3914f;
+    --text-main: #1A3B5C;
+    --text-muted: #6B7280; /* Pale Sky */
+    --placeholder: #9CA3AF; /* Gray Chateau */
+    --background: #FFFFFF;
+    --surface: #ffffff;
+    --border: rgba(26, 59, 92, 0.2);
+    
+    /* Typography */
+    --font-main: 'Noto Sans Arabic', sans-serif;
+    
+    /* Figma Specific Components */
+    --cairo: 'Cairo', sans-serif;
+    --noto: 'Noto Sans Arabic', sans-serif;
+    
+    /* Spacing - Logical Properties */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2.5rem;
+    --space-xl: 4rem;
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
 }
+
+/* Base Overrides for Premium Feel */
+body {
+    background-color: #F9FAFB;
+    font-family: var(--font-main);
+    color: var(--text-main);
+    direction: rtl;
+}
+
+/* Figma Search Page Styles */
+.search-container {
+    max-inline-size: 448px;
+    margin-inline: auto;
+    padding-block: 50px;
+    text-align: center;
+}
+
+.search-input {
+    inline-size: 100%;
+    block-size: 56px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding-inline: 16px;
+    font-size: 18px;
+    text-align: right;
+    background: white;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(200, 165, 95, 0.1);
+}
+
+.btn-figma-gold {
+    inline-size: 100%;
+    block-size: 56px;
+    background: var(--accent);
+    color: var(--primary);
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px -2px rgba(26,59,92,0.05);
+    transition: background 0.2s;
+}
+
+.btn-figma-gold:hover {
+    background: var(--accent-hover);
+}
+
+/* Figma Status Page Styles */
+.mobile-container {
+    max-inline-size: 448px;
+    margin-inline: auto;
+    background: white;
+    min-block-size: 100vh;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
+}
+
+.status-card {
+    background: white;
+    border: 1px solid #f3f4f6;
+    border-radius: 12px;
+    padding: 21px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.status-badge {
+    background: rgba(200, 165, 95, 0.1);
+    color: var(--accent);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--cairo);
+}
+
+.timeline-figma {
+    position: relative;
+    padding-inline-end: 48px;
+}
+
+.timeline-figma::before {
+    content: '';
+    position: absolute;
+    inset-inline-end: 23px;
+    top: 16px;
+    bottom: 40px;
+    inline-size: 2px;
+    background: #f3f4f6;
+}
+
+.timeline-step {
+    position: relative;
+    padding-block-end: 40px;
+}
+
+.timeline-dot {
+    position: absolute;
+    inset-inline-end: -39px;
+    top: 0;
+    inline-size: 30px;
+    block-size: 30px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-dot.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.timeline-dot.current {
+    background: white;
+    border: 3px solid var(--accent);
+    color: var(--accent);
+    inline-size: 42px;
+    block-size: 42px;
+    inset-inline-end: -45px;
+    top: -6px;
+    box-shadow: 0 0 15px rgba(200, 165, 95, 0.3);
+}
+
+.timeline-connector {
+    position: absolute;
+    inset-inline-end: 23px;
+    top: 30px;
+    bottom: -10px;
+    inline-size: 2px;
+    background: var(--accent);
+    z-index: 1;
+}
+
+.card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
+    margin-block-end: var(--space-md);
+}
+
+/* Logic Properties Helpers */
+.m-is-1 { margin-inline-start: 0.25rem; }
+.m-is-2 { margin-inline-start: 0.5rem; }
+.m-is-4 { margin-inline-start: 1rem; }
+
+/* Timeline Components */
+.timeline {
+    position: relative;
+    padding-inline-start: var(--space-lg);
+    border-inline-start: 2px solid var(--border);
+}
+
+.timeline-item {
+    position: relative;
+    padding-block-end: var(--space-lg);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: calc(-1 * var(--space-lg) - 7px);
+    inset-block-start: 0;
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--surface);
+}
+
+.timeline-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.timeline-status {
+    font-weight: 700;
+    display: block;
+}
+
+/* Yemen Flag Accents */
+.header-accent {
+    block-size: 4px;
+    background: linear-gradient(to right, #ce1126 33.3%, #ffffff 33.3%, #ffffff 66.6%, #000000 66.6%);
+}
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+.btn-accent {
+    background-color: var(--accent) !important;
+    color: var(--primary) !important;
+}
+/* Admin Interface Styles - Figma Perfect */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 288px 1fr;
+    min-block-size: 100vh;
+}
+
+.sidebar-figma {
+    background: var(--primary);
+    color: white;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-inline: var(--space-sm);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-item.active {
+    color: var(--accent);
+}
+
+.sidebar-profile {
+    margin-block-start: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Topbar */
+.topbar-figma {
+    background: white;
+    padding: var(--space-md) var(--space-xl);
+    border-block-end: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Admin Cards & Bento Grid */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+    margin-block-end: var(--space-lg);
+}
+
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+    inline-size: 48px;
+    block-size: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(200, 165, 95, 0.1);
+    color: var(--accent);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Table Figma */
+.table-container {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
+    overflow: clip;
+    box-shadow: var(--shadow-sm);
+}
+
+.table-figma {
+    inline-size: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+.table-figma th {
+    background: #F9FAFB;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-block-end: 1px solid #E5E7EB;
+}
+
+.table-figma td {
+    padding: 16px 24px;
+    border-block-end: 1px solid #F3F4F6;
+    font-size: 14px;
+}
+
+.table-figma tr:last-child td {
+    border-block-end: none;
+}
+
+/* Form Figma */
+.form-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
+    padding: 32px;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 32px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-block-end: 8px;
+    color: var(--primary);
+}
+
+.form-input {
+    inline-size: 100%;
+    block-size: 44px;
+    padding-inline: 16px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.photo-upload-box {
+    background: #F9FAFB;
+    border: 2px dashed #D1D5DB;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.photo-upload-box:hover {
+    background: #F3F4F6;
+    border-color: var(--accent);
+}
+
+.photo-preview-placeholder {
+    inline-size: 80px;
+    block-size: 80px;
+    background: white;
+    border-radius: 50%;
+    margin-inline: auto;
+    margin-block-end: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Utility for Logical properties */
+[dir="rtl"] .m-is-4 { margin-inline-start: 1rem; }
+[dir="rtl"] .p-is-4 { padding-inline-start: 1rem; }

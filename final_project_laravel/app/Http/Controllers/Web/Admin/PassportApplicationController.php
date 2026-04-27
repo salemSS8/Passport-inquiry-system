@@ -36,6 +36,41 @@ class PassportApplicationController extends Controller
         return view('admin.applications.index', compact('applications'));
     }
 
+    public function show(PassportApplication $application)
+    {
+        $application->load(['branch', 'pickupBranch', 'statusUpdates.updater']);
+        return view('admin.applications.show', compact('application'));
+    }
+
+    public function edit(PassportApplication $application)
+    {
+        $branches = Branch::all();
+        return view('admin.applications.edit', compact('application', 'branches'));
+    }
+
+    public function update(Request $request, PassportApplication $application)
+    {
+        $data = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'national_id' => 'required|string|max:20',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|in:male,female',
+            'address' => 'nullable|string',
+            'branch_id' => 'required|exists:branches,id',
+            'pickup_branch_id' => 'nullable|exists:branches,id',
+            'photo' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $data['photo_path'] = $this->mediaService->uploadPhoto($request->file('photo'));
+        }
+
+        $application->update($data);
+
+        return redirect()->route('admin.applications.index')->with('success', 'Application updated successfully.');
+    }
+
     public function create()
     {
         $branches = Branch::all();
@@ -46,8 +81,13 @@ class PassportApplicationController extends Controller
     {
         $data = $request->validate([
             'full_name' => 'required|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
             'national_id' => 'required|string|max:20',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|in:male,female',
+            'address' => 'nullable|string',
             'branch_id' => 'required|exists:branches,id',
+            'pickup_branch_id' => 'nullable|exists:branches,id',
             'photo' => 'nullable|image|max:2048',
         ]);
 

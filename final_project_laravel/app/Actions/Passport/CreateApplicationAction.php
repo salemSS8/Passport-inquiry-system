@@ -15,8 +15,9 @@ class CreateApplicationAction
     public function execute(array $data): PassportApplication
     {
         return DB::transaction(function () use ($data) {
-            $data['tracking_number'] = 'TRK-' . strtoupper(Str::random(10));
-            $data['serial_number'] = 'SER-' . strtoupper(Str::random(8));
+            $data['tracking_number'] ??= 'TRK-' . strtoupper(Str::random(10));
+            $data['serial_number'] ??= 'SER-' . strtoupper(Str::random(8));
+            $data['status'] ??= 'pending';
             
             $application = PassportApplication::create($data);
 
@@ -24,7 +25,7 @@ class CreateApplicationAction
             StatusUpdate::create([
                 'passport_application_id' => $application->id,
                 'status' => 'pending',
-                'comment' => 'Application submitted.',
+                'comment' => 'تم استلام الطلب وبدء المعالجة.', // Arabic comment for local context
                 'updated_by' => $data['user_id']
             ]);
 
