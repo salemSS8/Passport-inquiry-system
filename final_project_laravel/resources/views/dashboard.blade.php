@@ -70,7 +70,7 @@
                     <td style="font-weight: 600;">{{ $app->full_name }}</td>
                     <td>
                         <span class="status-badge" style="background: {{ $app->status == 'ready' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(200, 165, 95, 0.1)' }}; color: {{ $app->status == 'ready' ? '#10B981' : 'var(--accent)' }};">
-                            {{ $app->status }}
+                            {{ $app->status_label }}
                         </span>
                     </td>
                     <td style="color: var(--text-muted);">{{ $app->created_at->diffForHumans() }}</td>
@@ -88,9 +88,9 @@
                 <svg style="inline-size: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 <span>إضافة طلب جديد</span>
             </a>
-            <button class="btn btn-primary" style="inline-size: 100%; block-size: 56px; border-radius: 8px; font-weight: 700;">
-                <svg style="inline-size: 24px; margin-inline-end: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                تصدير تقرير إحصائي
+            <button class="btn btn-primary" style="inline-size: 100%; block-size: 100px; border-radius: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+                <svg style="inline-size: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span>تصدير تقرير إحصائي</span>
             </button>
         </div>
     </div>

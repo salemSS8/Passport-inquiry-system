@@ -72,7 +72,7 @@
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: start;">
                             <div>
-                                <h4 style="margin: 0; font-size: 1rem; color: var(--primary);">{{ $update->status }}</h4>
+                                <h4 style="margin: 0; font-size: 1rem; color: var(--primary);">{{ \App\Models\PassportApplication::STATUS_LABELS[$update->status] ?? $update->status }}</h4>
                                 <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">{{ $update->comment }}</p>
                             </div>
                             <span style="font-size: 0.75rem; color: var(--placeholder);">{{ $update->created_at->format('Y/m/d h:i A') }}</span>

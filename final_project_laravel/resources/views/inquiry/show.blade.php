@@ -26,7 +26,7 @@
             </div>
             
             <div style="color: var(--accent); font-family: var(--cairo); font-weight: 700; font-size: 20px; text-align: right; margin-block-end: 12px;">
-                {{ $application->status }}
+                {{ $application->status_label }}
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; margin-block-end: 16px;">

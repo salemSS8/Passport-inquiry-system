@@ -17,17 +17,13 @@
         <div class="admin-layout">
             @include('layouts.navigation')
             
-            <div class="main-content-wrapper">
+            <div class="main-content-figma">
                 <header class="topbar-figma">
                     <div style="display: flex; align-items: center; gap: var(--space-md);">
                         <h2 style="margin: 0; font-size: 1.25rem;">@yield('header_title', 'لوحة التحكم')</h2>
                     </div>
                     <div style="display: flex; align-items: center; gap: var(--space-md);">
-                        <div style="position: relative;">
-                            <input type="text" placeholder="بحث سريع..." class="form-input" style="inline-size: 300px; padding-inline-start: 40px;">
-                            <svg style="position: absolute; inset-inline-start: 12px; top: 12px; inline-size: 20px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </div>
-                        <button class="btn btn-primary" style="padding: 10px 20px; border-radius: 8px;">دعم فني</button>
+                        <!-- Removed search and support button per user request -->
                     </div>
                 </header>
 
@@ -65,7 +61,7 @@
         <p>مصلحة الهجرة والجوازات والجنسية &copy; {{ date('Y') }}</p>
     </footer>
     @endguest
-</body>
-</html>
+
+    @stack('scripts')
 </body>
 </html>

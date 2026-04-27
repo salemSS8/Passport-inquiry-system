@@ -81,11 +81,19 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="margin-block-end: 16px;">
                         <label for="pickup_branch_id">فرع استلام الجواز</label>
                         <select name="pickup_branch_id" id="pickup_branch_id" class="form-input" required>
                             @foreach($branches as $branch)
                                 <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">حالة الطلب</label>
+                        <select name="status" id="status" class="form-input" required>
+                            @foreach(\App\Models\PassportApplication::STATUS_LABELS as $value => $label)
+                                <option value="{{ $value }}" {{ old('status', 'pending') == $value ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>

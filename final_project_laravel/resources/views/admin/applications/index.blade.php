@@ -5,27 +5,28 @@
 
 @section('content')
 <div style="margin-block-end: var(--space-lg); display: flex; justify-content: space-between; align-items: center;">
-    <div style="display: flex; gap: var(--space-md);">
+    <form action="{{ route('admin.applications.index') }}" method="GET" style="display: flex; gap: var(--space-md);">
         <div style="position: relative;">
-            <input type="text" placeholder="بحث بالاسم أو رقم التتبع..." class="form-input" style="inline-size: 350px; padding-inline-start: 40px;">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="بحث بالاسم أو رقم التتبع..." class="form-input" style="inline-size: 350px; padding-inline-start: 40px;">
             <svg style="position: absolute; inset-inline-start: 12px; top: 12px; inline-size: 20px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <select class="form-input" style="inline-size: 180px;">
+        <select name="status" class="form-input" style="inline-size: 180px;" onchange="this.form.submit()">
             <option value="">كل الحالات</option>
-            <option value="pending">قيد الانتظار</option>
-            <option value="processing">جاري المعالجة</option>
-            <option value="ready">جاهز للاستلام</option>
-            <option value="collected">تم التسليم</option>
+            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
+            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>جاري المعالجة</option>
+            <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>جاهز للاستلام</option>
+            <option value="collected" {{ request('status') == 'collected' ? 'selected' : '' }}>تم التسليم</option>
         </select>
-    </div>
+        <button type="submit" style="display: none;"></button>
+    </form>
     
     <div style="display: flex; gap: var(--space-sm);">
-        <button class="btn" style="background: #F3F4F6; color: var(--primary); padding: 10px 20px; border-radius: 8px; font-weight: 600; border: 1px solid #E5E7EB;">
-            <svg style="inline-size: 20px; margin-inline-end: 8px; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <button class="btn-figma-outline">
+            <svg style="inline-size: 20px; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             تصدير PDF
         </button>
-        <a href="{{ route('admin.applications.create') }}" class="btn-figma-gold" style="padding-inline: 24px; text-decoration: none;">
-            <svg style="inline-size: 20px; margin-inline-end: 8px; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <a href="{{ route('admin.applications.create') }}" class="btn-figma-gold" style="text-decoration: none;">
+            <svg style="inline-size: 20px; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             إضافة طلب جديد
         </a>
     </div>
@@ -65,7 +66,7 @@
                         $application->status == 'ready' ? '#10B981' : 
                         ($application->status == 'processing' ? '#3B82F6' : 'var(--accent)') 
                     }};">
-                        {{ $application->status }}
+                        {{ $application->status_label }}
                     </span>
                 </td>
                 <td>{{ $application->branch->name ?? 'المركز الرئيسي' }}</td>
@@ -75,7 +76,7 @@
                         <a href="{{ route('admin.applications.show', $application) }}" class="btn" style="padding: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; color: var(--primary);">
                             <svg style="inline-size: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         </a>
-                        <a href="#" class="btn" style="padding: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; color: var(--accent);">
+                        <a href="{{ route('admin.applications.edit', $application) }}" class="btn" style="padding: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; color: var(--accent);">
                             <svg style="inline-size: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         </a>
                     </div>
@@ -96,7 +97,33 @@
     </table>
 </div>
 
-<div style="margin-block-start: var(--space-lg);">
+<div style="margin-block-start: var(--space-lg); display: flex; justify-content: center;">
     {{ $applications->links() }}
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="search"]');
+        const filterForm = searchInput ? searchInput.closest('form') : null;
+        let debounceTimer;
+
+        if (searchInput && filterForm) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    filterForm.submit();
+                }, 500); // 500ms debounce
+            });
+
+            // Focus at end of text
+            if (searchInput.value) {
+                const len = searchInput.value.length;
+                searchInput.focus();
+                searchInput.setSelectionRange(len, len);
+            }
+        }
+    });
+</script>
+@endpush
 @endsection
