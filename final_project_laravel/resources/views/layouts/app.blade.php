@@ -8,48 +8,54 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="header-accent"></div>
     
-    @auth
+    @if(auth()->check() && !request()->routeIs('inquiry.*'))
         <div class="admin-layout">
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
             @include('layouts.navigation')
             
             <div class="main-content-figma">
-                <header class="topbar-figma">
-                    <div style="display: flex; align-items: center; gap: var(--space-md);">
-                        <h2 style="margin: 0; font-size: 1.25rem;">@yield('header_title', 'لوحة التحكم')</h2>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-md);">
-                        <!-- Removed search and support button per user request -->
-                    </div>
+                <header class="mobile-topbar">
+                    <button class="hamburger" id="menuToggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                    </button>
+                    <h2 class="h3" style="margin: 0;">@yield('header_title', 'لوحة التحكم')</h2>
+                    <div style="width: 40px;"></div> <!-- Spacer -->
                 </header>
 
-                <main style="padding: var(--space-lg) var(--space-xl);">
+                <header class="topbar-figma desktop-only" style="display: none;">
+                    <h2 style="margin: 0;">@yield('header_title', 'لوحة التحكم')</h2>
+                </header>
+
+                <main style="padding: var(--space-md);">
                     @yield('content')
                     {{ $slot ?? '' }}
                 </main>
             </div>
         </div>
     @else
-        <div class="header-accent"></div>
-        <nav class="card" style="margin-bottom: 0; border-radius: 0; padding: var(--space-sm) var(--space-md);">
-            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center; gap: var(--space-sm);">
-                    <img src="/images/logo.png" alt="Emblem" style="block-size: 50px;">
-                    <h3 style="margin: 0;">الجمهورية اليمنية</h3>
+        <nav class="card" style="margin-bottom: 0; border-radius: 0;">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding-block: var(--space-xs);">
+                <div style="display: flex; align-items: center; gap: var(--space-xs);">
+                    <img src="/images/logo.png" alt="Emblem" style="height: 40px;">
+                    <h3 style="margin: 0; font-size: 1rem;">الجمهورية اليمنية</h3>
                 </div>
-                <div>
-                    <a href="{{ route('inquiry.index') }}" style="text-decoration: none; color: var(--primary); font-weight: 600;">الرئيسية</a>
-                    <a href="/login" style="margin-inline-start: var(--space-md); text-decoration: none; color: var(--primary);">دخول الموظفين</a>
+                <div class="desktop-nav">
+                    <a href="{{ route('inquiry.index') }}" class="btn-figma-outline" style="border: none;">الرئيسية</a>
+                    <a href="/login" class="btn-figma-gold">دخول الموظفين</a>
                 </div>
+                <button class="hamburger mobile-only" id="guestMenuToggle" style="display: none;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                </button>
             </div>
         </nav>
 
         <main class="main-content">
-            <div class="container" style="max-inline-size: 1200px; margin-inline: auto; padding: var(--space-lg);">
+            <div class="container">
                 @yield('content')
                 {{ $slot ?? '' }}
             </div>
@@ -57,11 +63,30 @@
     @endauth
 
     @guest
-    <footer style="text-align: center; padding-block: var(--space-lg); color: var(--text-muted);">
+    <footer style="text-align: center; padding-block: var(--space-md); color: var(--text-muted); font-size: 0.8rem;">
         <p>مصلحة الهجرة والجوازات والجنسية &copy; {{ date('Y') }}</p>
     </footer>
     @endguest
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.querySelector('.sidebar-figma');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (menuToggle && sidebar && overlay) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
+
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
