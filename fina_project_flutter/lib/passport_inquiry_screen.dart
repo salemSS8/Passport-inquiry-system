@@ -133,22 +133,10 @@ class _PassportInquiryScreenState extends State<PassportInquiryScreen> {
                               top: 60.0,
                               bottom: 24.0,
                             ),
-                            child: Center(
-                              child: Container(
-                                height: 120,
-                                width: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.borderLight.withAlpha(76),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.account_balance,
-                                    size: 60,
-                                    color: AppColors.primaryDarkBlue,
-                                  ),
-                                ),
-                              ),
+                            child: Image.asset(
+                              'assets/logo.png',
+                              height: 140,
+                              fit: BoxFit.contain,
                             ),
                           ),
 
