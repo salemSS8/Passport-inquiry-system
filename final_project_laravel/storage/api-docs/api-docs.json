@@ -1,0 +1,139 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Passport Inquiry System API",
+        "description": "API documentation for the Passport Inquiry System",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local Development Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authenticate user and return token",
+                "operationId": "67355398db064d443f315064924a977c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Revoke user tokens",
+                "operationId": "05a4959c18d47bc51205b184ea81fb11",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/inquiry/{identifier}": {
+            "get": {
+                "tags": [
+                    "Inquiry"
+                ],
+                "summary": "Inquire about passport status",
+                "operationId": "c86192358f12c036f463b20dc4c98df1",
+                "parameters": [
+                    {
+                        "name": "identifier",
+                        "in": "path",
+                        "description": "Tracking Number or National ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Application found"
+                    },
+                    "404": {
+                        "description": "Application not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Inquiry",
+            "description": "Inquiry"
+        }
+    ]
+}
