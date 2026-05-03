@@ -38,6 +38,7 @@ class EmployeeController extends Controller
 
         return redirect()->route('admin.employees.index')->with('success', 'تم إضافة الموظف بنجاح.');
     }
+<<<<<<< salimbokir
 
     public function edit(User $employee)
     {
@@ -69,4 +70,6 @@ class EmployeeController extends Controller
         $employee->delete();
         return redirect()->route('admin.employees.index')->with('success', 'تم حذف الموظف بنجاح.');
     }
+=======
+>>>>>>> mergebranches
 }

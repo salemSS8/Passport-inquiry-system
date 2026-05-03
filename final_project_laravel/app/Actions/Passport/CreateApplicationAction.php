@@ -19,7 +19,7 @@ class CreateApplicationAction
         return DB::transaction(function () use ($data) {
             // Duplicate Entry Check: Reject if there is an active application for this National ID
             $exists = PassportApplication::where('national_id', $data['national_id'])
-                ->whereNotIn('status', ['collected', 'تم التسليم'])
+                ->where('status', '!=', 'collected')
                 ->exists();
 
             if ($exists) {
@@ -30,8 +30,8 @@ class CreateApplicationAction
             }
 
             $data['tracking_number'] ??= 'TRK-'.strtoupper(Str::random(10));
-            $data['serial_number'] ??= (string) random_int(1000000000, 9999999999);
-            $data['status'] ??= 'قيد الانتظار';
+            $data['serial_number'] ??= 'SER-'.strtoupper(Str::random(8));
+            $data['status'] ??= 'pending';
 
             $application = PassportApplication::create($data);
 
