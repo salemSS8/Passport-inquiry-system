@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('serial_number')->unique();
             $table->string('national_id');
             $table->string('full_name');
-            $table->enum('status', ['pending', 'processing', 'ready', 'collected'])->default('pending');
+            $table->string('status')->default('قيد الانتظار');
             $table->string('photo_path')->nullable();
             $table->string('tracking_number')->unique();
             $table->timestamps();

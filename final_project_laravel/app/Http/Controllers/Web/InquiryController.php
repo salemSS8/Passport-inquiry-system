@@ -28,8 +28,10 @@ class InquiryController extends Controller
             return redirect()->route('inquiry.index');
         }
 
-        $application = $this->searchService->findForInquiry($identifier);
+        $passport = \App\Models\PassportApplication::with(['branch', 'statusUpdates' => fn($q) => $q->latest()])
+            ->where('serial_number', $identifier)
+            ->firstOrFail();
 
-        return view('inquiry.show', compact('application', 'identifier'));
+        return view('inquiry.show', compact('passport', 'identifier'));
     }
 }
