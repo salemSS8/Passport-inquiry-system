@@ -38,4 +38,38 @@ class EmployeeController extends Controller
 
         return redirect()->route('admin.employees.index')->with('success', 'تم إضافة الموظف بنجاح.');
     }
+<<<<<<< salimbokir
+
+    public function edit(User $employee)
+    {
+        return view('admin.employees.edit', compact('employee'));
+    }
+
+    public function update(Request $request, User $employee)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $employee->id],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $employee->name = $request->name;
+        $employee->email = $request->email;
+        
+        if ($request->filled('password')) {
+            $employee->password = Hash::make($request->password);
+        }
+
+        $employee->save();
+
+        return redirect()->route('admin.employees.index')->with('success', 'تم تحديث بيانات الموظف بنجاح.');
+    }
+
+    public function destroy(User $employee)
+    {
+        $employee->delete();
+        return redirect()->route('admin.employees.index')->with('success', 'تم حذف الموظف بنجاح.');
+    }
+=======
+>>>>>>> mergebranches
 }

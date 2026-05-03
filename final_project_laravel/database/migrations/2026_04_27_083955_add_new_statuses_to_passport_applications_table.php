@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('passport_applications', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'processing', 'ready', 'collected', 'cancelled', 'archived'])->default('pending')->change();
+            $table->string('status')->default('قيد الانتظار')->change();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('passport_applications', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'processing', 'ready', 'collected'])->default('pending')->change();
+            $table->string('status')->default('قيد الانتظار')->change();
         });
     }
 };
