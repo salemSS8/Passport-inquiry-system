@@ -2,91 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_strings.dart';
-import 'providers/passport_provider.dart';
 
-class PassportTrackingScreen extends ConsumerWidget {
+class PassportTrackingScreen extends StatelessWidget {
   const PassportTrackingScreen({super.key});
 
-  String _translateStatus(String? status) {
-    if (status == null || status.isEmpty) return "حالة غير معروفة";
-    final s = status.toLowerCase();
-    switch (s) {
-      case 'pending':
-        return 'قيد الانتظار';
-      case 'processing':
-        return 'قيد المعالجة';
-      case 'printed':
-        return 'تمت الطباعة';
-      case 'ready':
-        return 'جاهز للاستلام';
-      case 'collected':
-        return 'تم التسليم';
-      case 'rejected':
-        return 'مرفوض';
-      default:
-        return status;
-    }
-  }
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final passport = ref.watch(passportProvider).passportData;
-
-    // Handle null state gracefully
-    if (passport == null) {
-      return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              AppStrings.trackingAppBarTitle,
-              style: GoogleFonts.cairo(
-                color: AppColors.darkNavyBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_forward),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          body: Center(
-            child: Text(
-              "لم يتم العثور على بيانات الجواز",
-              style: GoogleFonts.cairo(
-                color: AppColors.greyText,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    // Since the API returns statusUpdates in descending order (latest first),
-    // reversing the list will display them chronologically from top to bottom.
-    final reversedUpdates = passport.statusUpdates?.reversed.toList() ?? [];
-
+  Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "${AppStrings.trackingAppBarTitle} - ${passport.serialNumber ?? ''}",
+            AppStrings.trackingAppBarTitle,
             style: GoogleFonts.cairo(
               color: AppColors.darkNavyBlue,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 18,
             ),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_forward),
             onPressed: () {
-              Navigator.pop(context);
+              // Handle back action
             },
           ),
         ),
@@ -100,7 +39,7 @@ class PassportTrackingScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 1. Current Status Card
-                    _buildCurrentStatusCard(passport),
+                    _buildCurrentStatusCard(),
 
                     const SizedBox(height: 30),
 
@@ -115,39 +54,40 @@ class PassportTrackingScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    // 3. Dynamic Timeline Items
-                    if (reversedUpdates.isNotEmpty)
-                      ...reversedUpdates.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final status = entry.value;
-                        final isLatest = index == reversedUpdates.length - 1; 
-                        final isCompleted = !isLatest; 
-                        final hasNext = index < reversedUpdates.length - 1;
-
-                        final translatedStatus = _translateStatus(status.status);
-
-                        IconData getIcon(String statusStr) {
-                           if (statusStr.contains("طباعة")) return Icons.print;
-                           if (statusStr.contains("إرسال") || statusStr.contains("ترحيل")) return Icons.local_shipping;
-                           if (statusStr.contains("وصل") || statusStr.contains("جاهز")) return Icons.inventory_2_outlined;
-                           if (statusStr.contains("تسليم") || statusStr.contains("استلام")) return Icons.how_to_reg;
-                           return Icons.info_outline;
-                        }
-
-                        return TimelineItem(
-                          title: translatedStatus,
-                          date: status.createdAt?.split('T').first ?? "",
-                          icon: getIcon(translatedStatus),
-                          isCompleted: isCompleted,
-                          hasNext: hasNext,
-                          isCurrent: isLatest,
-                        );
-                      }).toList()
-                    else
-                      Text(
-                        "لا توجد تحديثات متاحة حالياً",
-                        style: GoogleFonts.cairo(color: AppColors.greyText),
-                      ),
+                    // 3. Timeline Items
+                    const TimelineItem(
+                      title: AppStrings.stepPrinted,
+                      date: "10/05/2024",
+                      icon: Icons.print,
+                      isCompleted: true,
+                      hasNext: true,
+                      isCurrent: false,
+                    ),
+                    const TimelineItem(
+                      title: AppStrings.stepWaitingDispatch,
+                      date: "12/05/2024",
+                      icon: Icons.local_shipping,
+                      isCompleted: true,
+                      hasNext: true,
+                      isCurrent: false,
+                    ),
+                    const TimelineItem(
+                      title: AppStrings.stepArrivedBranch,
+                      subtitle: AppStrings.stepPleasePickup,
+                      date: AppStrings.dateNow,
+                      icon: Icons.inventory_2_outlined,
+                      isCompleted: false,
+                      hasNext: true,
+                      isCurrent: true,
+                    ),
+                    const TimelineItem(
+                      title: AppStrings.stepDelivered,
+                      date: AppStrings.datePlaceholder,
+                      icon: Icons.how_to_reg,
+                      isCompleted: false,
+                      hasNext: false,
+                      isCurrent: false,
+                    ),
                   ],
                 ),
               ),
@@ -160,7 +100,7 @@ class PassportTrackingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCurrentStatusCard(passport) {
+  Widget _buildCurrentStatusCard() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -171,6 +111,8 @@ class PassportTrackingScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Top Row: "الحالة الحالية" (Right) and Badge (Left)
+          // In RTL, the first child is on the right, the second is on the left
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -202,9 +144,7 @@ class PassportTrackingScreen extends ConsumerWidget {
 
           // Main Status Text
           Text(
-            (passport.statusUpdates != null && passport.statusUpdates!.isNotEmpty)
-                ? _translateStatus(passport.statusUpdates!.first.status)
-                : "لا توجد حالة",
+            AppStrings.readyForPickupStatus,
             style: GoogleFonts.cairo(
               color: AppColors.solidGold,
               fontWeight: FontWeight.bold,
@@ -223,7 +163,7 @@ class PassportTrackingScreen extends ConsumerWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                passport.branch?.name ?? AppStrings.deliveryLocation,
+                AppStrings.deliveryLocation,
                 style: GoogleFonts.cairo(
                   color: AppColors.darkNavyBlue,
                   fontSize: 13,
@@ -248,6 +188,7 @@ class PassportTrackingScreen extends ConsumerWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
+                  // Interactive Map
                   FlutterMap(
                     options: MapOptions(
                       initialCenter: const LatLng(15.3694, 44.1910), // Sana'a
@@ -265,6 +206,9 @@ class PassportTrackingScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  // Overlay Bottom Left (since text is right-to-left, bottom left is visually appealing)
+                  // The design says "bottom-left or bottom-right". Let's put it on the visual right (bottom: 8, right: 8 in RTL means right side)
+                  // Actually, "bottom-left or bottom-right". Let's use bottom 8, right 8 (which is RTL visual right).
                   Positioned(
                     bottom: 8,
                     right: 8,

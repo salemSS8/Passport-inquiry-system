@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_strings.dart';
 import 'passport_tracking_screen.dart';
-import 'providers/passport_provider.dart';
 
-class PassportInquiryScreen extends ConsumerStatefulWidget {
+class PassportInquiryScreen extends StatefulWidget {
   const PassportInquiryScreen({super.key});
 
   @override
-  ConsumerState<PassportInquiryScreen> createState() => _PassportInquiryScreenState();
+  State<PassportInquiryScreen> createState() => _PassportInquiryScreenState();
 }
 
-class _PassportInquiryScreenState extends ConsumerState<PassportInquiryScreen> {
+class _PassportInquiryScreenState extends State<PassportInquiryScreen> {
   final TextEditingController _serialNumberController = TextEditingController();
 
   @override
@@ -104,37 +102,14 @@ class _PassportInquiryScreenState extends ConsumerState<PassportInquiryScreen> {
       return;
     }
 
-    if (ref.read(passportProvider).isLoading) return;
-
-    ref.read(passportProvider.notifier).fetchPassportData(_serialNumberController.text.trim());
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PassportTrackingScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<PassportState>(passportProvider, (previous, next) {
-      if (next.error != null && next.error != previous?.error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              next.error!,
-              style: GoogleFonts.cairo(),
-            ),
-            backgroundColor: Colors.redAccent,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-
-      if (next.passportData != null && !next.isLoading && previous?.isLoading == true) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const PassportTrackingScreen()),
-        );
-      }
-    });
-
-    final isLoading = ref.watch(passportProvider).isLoading;
-
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -248,7 +223,7 @@ class _PassportInquiryScreenState extends ConsumerState<PassportInquiryScreen> {
                             height: 55,
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: isLoading ? null : _handleInquiry,
+                              onPressed: _handleInquiry,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.goldAccent,
                                 shape: RoundedRectangleBorder(
@@ -256,26 +231,24 @@ class _PassportInquiryScreenState extends ConsumerState<PassportInquiryScreen> {
                                 ),
                                 elevation: 0,
                               ),
-                              child: isLoading
-                                  ? const CircularProgressIndicator(color: AppColors.white)
-                                  : Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.search,
-                                          color: AppColors.primaryDarkBlue,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          AppStrings.searchButton,
-                                          style: GoogleFonts.cairo(
-                                            color: AppColors.primaryDarkBlue,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.search,
+                                    color: AppColors.primaryDarkBlue,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    AppStrings.searchButton,
+                                    style: GoogleFonts.cairo(
+                                      color: AppColors.primaryDarkBlue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
                                     ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 24),

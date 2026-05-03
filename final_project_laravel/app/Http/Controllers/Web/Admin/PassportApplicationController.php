@@ -61,7 +61,7 @@ class PassportApplicationController extends Controller
     public function edit(PassportApplication $application)
     {
         // Status Locking: Prevent editing if ready or collected
-        if (in_array($application->status, ['ready', 'collected', 'جاهز للاستلام', 'تم التسليم'])) {
+        if (in_array($application->status, ['ready', 'collected'])) {
             return redirect()->route('admin.applications.index')
                 ->with('error', 'لا يمكن تعديل الطلب بعد وصوله لمرحلة الجاهزية أو التسليم.');
         }
@@ -74,7 +74,7 @@ class PassportApplicationController extends Controller
     public function update(Request $request, PassportApplication $application)
     {
         // Status Locking: Prevent update if ready or collected
-        if (in_array($application->status, ['ready', 'collected', 'جاهز للاستلام', 'تم التسليم'])) {
+        if (in_array($application->status, ['ready', 'collected'])) {
             return redirect()->route('admin.applications.index')
                 ->with('error', 'لا يمكن تعديل بيانات الطلب في هذه المرحلة.');
         }
@@ -118,7 +118,7 @@ class PassportApplicationController extends Controller
             'address' => 'nullable|string',
             'branch_id' => 'required|exists:branches,id',
             'pickup_branch_id' => 'nullable|exists:branches,id',
-            'status' => 'nullable|in:pending,processing,ready,collected,قيد الانتظار,جاري المعالجة,جاهز للاستلام,تم التسليم',
+            'status' => 'nullable|in:pending,processing,ready,collected',
             'photo' => 'nullable|image|max:2048',
         ]);
 
@@ -144,7 +144,7 @@ class PassportApplicationController extends Controller
     public function updateStatus(Request $request, PassportApplication $application, UpdateStatusAction $updateAction)
     {
         $data = $request->validate([
-            'status' => 'required|in:pending,processing,ready,collected,cancelled,archived,قيد الانتظار,جاري المعالجة,جاهز للاستلام,تم التسليم,ملغي,مؤرشف',
+            'status' => 'required|in:pending,processing,ready,collected',
             'comment' => 'nullable|string',
         ]);
 
