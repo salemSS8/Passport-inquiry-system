@@ -9,9 +9,6 @@ class SearchService
 {
     /**
      * Search for applications using multiple criteria.
-     *
-     * @param string $query
-     * @return Collection
      */
     public function search(string $query): Collection
     {
@@ -24,13 +21,11 @@ class SearchService
     }
 
     /**
-     * Find a single application by tracking number or national ID (common for citizens).
+     * Find a single application by serial number (Private snippet key for citizens).
      */
     public function findForInquiry(string $identifier)
     {
-        return PassportApplication::where('tracking_number', $identifier)
-            ->orWhere('serial_number', $identifier)
-            ->orWhere('national_id', $identifier)
+        return PassportApplication::where('serial_number', $identifier)
             ->with(['branch', 'pickupBranch', 'statusUpdates' => function ($query) {
                 $query->latest();
             }, 'statusUpdates.updater'])

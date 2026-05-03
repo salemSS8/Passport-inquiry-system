@@ -8,18 +8,16 @@
     --text-main: #1A3B5C;
     --text-muted: #6B7280; /* Pale Sky */
     --placeholder: #9CA3AF; /* Gray Chateau */
-    --background: #FFFFFF;
+    --background: #F9FAFB;
     --surface: #ffffff;
     --border: rgba(26, 59, 92, 0.2);
     
-    /* Typography */
+    /* Typography - Fluid System */
     --font-main: 'Noto Sans Arabic', sans-serif;
-    
-    /* Figma Specific Components */
     --cairo: 'Cairo', sans-serif;
     --noto: 'Noto Sans Arabic', sans-serif;
     
-    /* Spacing - Logical Properties */
+    /* Spacing - Responsive System */
     --space-xs: 0.5rem;
     --space-sm: 1rem;
     --space-md: 1.5rem;
@@ -30,254 +28,103 @@
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
     --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+
+    /* Transition */
+    --transition: 0.3s ease;
 }
 
-/* Base Overrides for Premium Feel */
+/* Base Overrides */
 body {
-    background-color: #F9FAFB;
+    background-color: var(--background);
     font-family: var(--font-main);
     color: var(--text-main);
     direction: rtl;
+    margin: 0;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Figma Search Page Styles */
-.search-container {
-    max-inline-size: 448px;
+/* Fluid Typography */
+html { font-size: 14px; }
+@media (min-width: 768px) { html { font-size: 15px; } }
+@media (min-width: 1024px) { html { font-size: 16px; } }
+
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+h2 { font-size: 1.5rem; font-weight: 700; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+
+/* Layout Utilities */
+.container {
+    inline-size: 90%;
+    max-inline-size: 1200px;
     margin-inline: auto;
-    padding-block: 50px;
-    text-align: center;
-}
-
-.search-input {
-    inline-size: 100%;
-    block-size: 56px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding-inline: 16px;
-    font-size: 18px;
-    text-align: right;
-    background: white;
-    transition: all 0.2s;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(200, 165, 95, 0.1);
-}
-
-.btn-figma-gold {
-    inline-size: 100%;
-    block-size: 56px;
-    background: var(--accent);
-    color: var(--primary);
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 20px -2px rgba(26,59,92,0.05);
-    transition: background 0.2s;
-}
-
-.btn-figma-gold:hover {
-    background: var(--accent-hover);
-}
-
-/* Figma Status Page Styles */
-.mobile-container {
-    max-inline-size: 448px;
-    margin-inline: auto;
-    background: white;
-    min-block-size: 100vh;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
-}
-
-.status-card {
-    background: white;
-    border: 1px solid #f3f4f6;
-    border-radius: 12px;
-    padding: 21px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-
-.status-badge {
-    background: rgba(200, 165, 95, 0.1);
-    color: var(--accent);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: var(--cairo);
-}
-
-.timeline-figma {
-    position: relative;
-    padding-inline-end: 48px;
-}
-
-.timeline-figma::before {
-    content: '';
-    position: absolute;
-    inset-inline-end: 23px;
-    top: 16px;
-    bottom: 40px;
-    inline-size: 2px;
-    background: #f3f4f6;
-}
-
-.timeline-step {
-    position: relative;
-    padding-block-end: 40px;
-}
-
-.timeline-dot {
-    position: absolute;
-    inset-inline-end: -39px;
-    top: 0;
-    inline-size: 30px;
-    block-size: 30px;
-    border-radius: 50%;
-    background: #f3f4f6;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.timeline-dot.active {
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.timeline-dot.current {
-    background: white;
-    border: 3px solid var(--accent);
-    color: var(--accent);
-    inline-size: 42px;
-    block-size: 42px;
-    inset-inline-end: -45px;
-    top: -6px;
-    box-shadow: 0 0 15px rgba(200, 165, 95, 0.3);
-}
-
-.timeline-connector {
-    position: absolute;
-    inset-inline-end: 23px;
-    top: 30px;
-    bottom: -10px;
-    inline-size: 2px;
-    background: var(--accent);
-    z-index: 1;
-}
-
-.card {
-    background: var(--surface);
-    border-radius: 12px;
-    padding: var(--space-lg);
-    box-shadow: var(--shadow-md);
-    margin-block-end: var(--space-md);
-}
-
-/* Logic Properties Helpers */
-.m-is-1 { margin-inline-start: 0.25rem; }
-.m-is-2 { margin-inline-start: 0.5rem; }
-.m-is-4 { margin-inline-start: 1rem; }
-
-/* Timeline Components */
-.timeline {
-    position: relative;
-    padding-inline-start: var(--space-lg);
-    border-inline-start: 2px solid var(--border);
-}
-
-.timeline-item {
-    position: relative;
-    padding-block-end: var(--space-lg);
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: calc(-1 * var(--space-lg) - 7px);
-    inset-block-start: 0;
-    inline-size: 12px;
-    block-size: 12px;
-    border-radius: 50%;
-    background: var(--accent);
-    border: 2px solid var(--surface);
-}
-
-.timeline-date {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-.timeline-status {
-    font-weight: 700;
-    display: block;
-}
-
-/* Yemen Flag Accents */
-.header-accent {
-    block-size: 4px;
-    background: linear-gradient(to right, #ce1126 33.3%, #ffffff 33.3%, #ffffff 66.6%, #000000 66.6%);
-}
-
-.btn-primary {
-    background-color: var(--primary) !important;
-    color: white !important;
-}
-
-.btn-accent {
-    background-color: var(--accent) !important;
-    color: var(--primary) !important;
-}
-/* Admin Interface Styles - Figma Perfect */
-.admin-layout {
-    display: grid;
-    grid-template-columns: 288px 1fr;
-    min-block-size: 100vh;
-}
-
-.sidebar-figma {
-    background: var(--primary);
-    color: white;
-    padding: var(--space-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-    border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
     padding-inline: var(--space-sm);
 }
 
-.sidebar-nav {
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.responsive-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+@media (min-width: 769px) {
+    .responsive-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .responsive-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .responsive-grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
+.card-actions {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-xs); /* استخدام مسافة 0.5rem بين الزرين */
+    width: 100%;
+}
+/* Components */
+.card {
+    background: var(--surface);
+    border-radius: 1rem;
+    padding: var(--space-xs); /* استخدم XS (0.5rem) للموبايل */
+    box-shadow: var(--shadow-md);
+    margin-block-end: var(--space-md);
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    .card { padding: var(--space-md); } /* ارجع لـ MD في التابلت */
+}
+
+@media (min-width: 1024px) {
+    .card { padding: var(--space-lg); } /* استخدم LG في الديسكتوب */
+}
+
+
+
+@media (min-width: 768px) {
+    .card { padding: var(--space-lg); }
 }
 
 .nav-item {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 8px;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.7);
     font-weight: 500;
-    transition: all 0.2s;
+    transition: var(--transition);
+}
+
+.nav-item svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
 }
 
 .nav-item:hover, .nav-item.active {
@@ -289,140 +136,218 @@ body {
     color: var(--accent);
 }
 
-.sidebar-profile {
-    margin-block-start: auto;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 16px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Topbar */
-.topbar-figma {
-    background: white;
-    padding: var(--space-md) var(--space-xl);
-    border-block-end: 1px solid #E5E7EB;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-/* Admin Cards & Bento Grid */
-.bento-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-md);
-    margin-block-end: var(--space-lg);
-}
-
-.stat-card {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    border: 1px solid #E5E7EB;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    box-shadow: var(--shadow-sm);
-}
-
-.stat-icon {
-    inline-size: 48px;
-    block-size: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(200, 165, 95, 0.1);
-    color: var(--accent);
-}
-
-.stat-value {
-    font-size: 24px;
-    font-weight: 900;
-    color: var(--primary);
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-/* Table Figma */
-.table-container {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #E5E7EB;
-    overflow: clip;
-    box-shadow: var(--shadow-sm);
-}
-
-.table-figma {
-    inline-size: 100%;
-    border-collapse: collapse;
-    text-align: right;
-}
-
-.table-figma th {
-    background: #F9FAFB;
-    padding: 16px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-muted);
-    border-block-end: 1px solid #E5E7EB;
-}
-
-.table-figma td {
-    padding: 16px 24px;
-    border-block-end: 1px solid #F3F4F6;
-    font-size: 14px;
-}
-
-.table-figma tr:last-child td {
-    border-block-end: none;
-}
-
-/* Form Figma */
-.form-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #E5E7EB;
-    padding: 32px;
-    box-shadow: var(--shadow-sm);
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 32px;
+/* Form Styles */
+.form-group {
+    margin-block-end: var(--space-md);
 }
 
 .form-group label {
     display: block;
-    font-size: 14px;
     font-weight: 700;
-    margin-block-end: 8px;
+    margin-block-end: 0.5rem;
     color: var(--primary);
 }
 
 .form-input {
     inline-size: 100%;
-    block-size: 44px;
-    padding-inline: 16px;
-    border: 1px solid #D1D5DB;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.2s;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 1rem;
+    transition: var(--transition);
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(200, 165, 95, 0.1);
 }
 
+/* Search UI Refactor */
+.search-container {
+    max-inline-size: 32rem;
+    margin-inline: auto;
+    padding-block: var(--space-xl);
+    text-align: center;
+}
+
+.search-logo {
+    max-inline-size: 12rem;
+    height: auto;
+    margin-inline: auto;
+    margin-block-end: var(--space-lg);
+}
+
+/* Admin Layout Refactor */
+.admin-layout {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100vh;
+}
+
+@media (min-width: 1025px) {
+    .admin-layout {
+        display: grid;
+        grid-template-columns: 18rem 1fr;
+    }
+}
+
+.sidebar-figma {
+    background: var(--primary);
+    color: white;
+    padding: var(--space-md);
+    position: fixed;
+    inset-inline-start: -100%;
+    top: 0;
+    bottom: 0;
+    inline-size: 16rem;
+    z-index: 1000;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.sidebar-figma.active {
+    inset-inline-start: 0;
+}
+
+@media (min-width: 1025px) {
+    .sidebar-figma {
+        position: sticky;
+        inset-inline-start: 0;
+        inline-size: auto;
+    }
+}
+
+.main-content-figma {
+    flex: 1;
+    background: #F9FAFB;
+    min-block-size: 100vh;
+    padding-block-start: 4rem; /* For mobile topbar */
+}
+
+@media (min-width: 1025px) {
+    .main-content-figma {
+        padding-block-start: 0;
+    }
+}
+
+/* Mobile Topbar */
+.mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    background: white;
+    border-block-end: 1px solid #e5e7eb;
+    position: fixed;
+    top: 0;
+    inline-size: 100%;
+    z-index: 900;
+}
+
+@media (min-width: 1025px) {
+    .mobile-topbar { display: none; }
+}
+
+.hamburger {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Table Responsive Wrapper */
+.table-responsive {
+    inline-size: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.table-figma {
+    inline-size: 100%;
+    min-inline-size: 600px;
+    border-collapse: collapse;
+}
+
+.table-figma th, .table-figma td {
+    padding: 1rem 1.5rem;
+    text-align: right;
+    border-block-end: 1px solid #f3f4f6;
+    font-size: 0.9rem;
+}
+
+.table-figma th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* Status Timeline Responsive */
+.timeline-figma {
+    position: relative;
+    padding-inline-end: 3rem;
+}
+
+.timeline-figma::before {
+    content: '';
+    position: absolute;
+    inset-inline-end: 1.4rem;
+    top: 1rem;
+    bottom: 2.5rem;
+    inline-size: 2px;
+    background: #f3f4f6;
+}
+
+.timeline-step {
+    position: relative;
+    padding-block-end: 2.5rem;
+}
+
+/* Yemen Flag Accent */
+.header-accent {
+    block-size: 4px;
+    background: linear-gradient(to right, #ce1126 33.3%, #ffffff 33.3%, #ffffff 66.6%, #000000 66.6%);
+    position: fixed;
+    top: 0;
+    inline-size: 100%;
+    z-index: 1001;
+}
+
+/* Helpers */
+.m-is-1 { margin-inline-start: 0.25rem; }
+.m-is-2 { margin-inline-start: 0.5rem; }
+.m-is-4 { margin-inline-start: 1rem; }
+
+/* Bento Grid Responsive */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-block-end: var(--space-lg);
+}
+
+/* Form Figma */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+@media (min-width: 1025px) {
+    .form-grid {
+        grid-template-columns: 1fr 300px;
+        gap: var(--space-lg);
+    }
+}
+
+/* Photo Upload Box */
 .photo-upload-box {
     background: #F9FAFB;
     border: 2px dashed #D1D5DB;
@@ -430,7 +355,7 @@ body {
     padding: 24px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition);
 }
 
 .photo-upload-box:hover {
@@ -439,18 +364,198 @@ body {
 }
 
 .photo-preview-placeholder {
-    inline-size: 80px;
-    block-size: 80px;
+    width: 60px;
+    height: 60px;
     background: white;
     border-radius: 50%;
     margin-inline: auto;
-    margin-block-end: 16px;
+    margin-block-end: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-sm);
 }
 
-/* Utility for Logical properties */
-[dir="rtl"] .m-is-4 { margin-inline-start: 1rem; }
-[dir="rtl"] .p-is-4 { padding-inline-start: 1rem; }
+.btn-figma-gold, .btn-figma-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.btn-figma-gold {
+    background: var(--accent);
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-figma-gold:hover {
+    background: var(--accent-hover);
+}
+
+.btn-figma-outline {
+    background: white;
+    color: var(--primary);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.btn-figma-outline:hover {
+    background: #f9fafb;
+    border-color: var(--accent);
+}
+
+/* Stat Card Refinement */
+.stat-card {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(200, 165, 95, 0.1);
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Table Utilities */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    margin-block-end: 1.5rem;
+}
+
+.table-figma {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Ensures table doesn't get too squished */
+}
+
+/* Overlay for Mobile Sidebar */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+/* Sidebar Profile Redesign */
+.sidebar-profile {
+    margin-block-start: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 0.75rem;
+    border-block-start: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.sidebar-profile:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.profile-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.6rem;
+    background: var(--accent);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: right;
+    overflow: hidden;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 1.2;
+}
+
+.profile-role {
+    margin: 0;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+}
+
+.logout-form {
+    margin-inline-end: auto;
+}
+
+.btn-logout {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    opacity: 0.4;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    border-radius: 0.4rem;
+}
+
+.btn-logout:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}

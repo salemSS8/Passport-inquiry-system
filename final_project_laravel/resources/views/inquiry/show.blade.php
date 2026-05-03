@@ -26,7 +26,7 @@
             </div>
             
             <div style="color: var(--accent); font-family: var(--cairo); font-weight: 700; font-size: 20px; text-align: right; margin-block-end: 12px;">
-                {{ $application->status }}
+                {{ $application->status_label }}
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; margin-block-end: 16px;">
@@ -38,14 +38,20 @@
                 </div>
             </div>
 
-            <!-- Mini Map Placeholder -->
-            <div style="block-size: 128px; background: #eee; border-radius: 8px; position: relative; overflow: hidden; background-image: url('https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/44.2075,15.3503,13/366x128?access_token=pk.placeholder'); background-size: cover;">
-                <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);"></div>
-                <div style="position: absolute; bottom: 12px; inset-inline-end: 12px; display: flex; align-items: center; gap: 4px; color: white; font-family: var(--cairo); font-weight: 700; font-size: 12px;">
-                    عرض في الخريطة
-                    <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 1L1 4L1 12L7 15L13 12L13 4L7 1Z" stroke="currentColor" stroke-width="2"/>
-                    </svg>
+            <!-- Mini Map Section -->
+            <div style="block-size: 140px; background: #e2e8f0; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid #e5e7eb;">
+                <div style="position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=600&h=200'); background-size: cover; background-position: center; filter: grayscale(0.2) brightness(0.9);"></div>
+                <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent);"></div>
+                
+                <div style="position: absolute; bottom: 12px; inset-inline: 12px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div style="color: white;">
+                        <div style="font-family: var(--cairo); font-size: 12px; font-weight: 700; opacity: 0.9;">موقع الاستلام</div>
+                        <div style="font-family: var(--cairo); font-size: 14px; font-weight: 800;">{{ $application->pickupBranch->name ?? $application->branch->name }}</div>
+                    </div>
+                    <a href="https://www.google.com/maps/search/{{ urlencode(($application->pickupBranch->name ?? $application->branch->name) . ' اليمن') }}" target="_blank" style="background: white; color: var(--primary); padding: 6px 12px; border-radius: 20px; font-family: var(--cairo); font-weight: 800; font-size: 11px; text-decoration: none; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        عرض في الخريطة
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
                 </div>
             </div>
         </div>
@@ -57,24 +63,20 @@
             <div class="timeline-figma">
                 @php
                     $steps = [
-                        ['id' => 'printed', 'label' => 'تمت الطباعة'],
-                        ['id' => 'waiting', 'label' => 'في انتظار الترحيل'],
-                        ['id' => 'arrived', 'label' => 'وصل الفرع'],
-                        ['id' => 'delivered', 'label' => 'تم التسليم'],
+                        ['id' => 'pending', 'label' => 'استلام الطلب'],
+                        ['id' => 'processing', 'label' => 'جاري المعالجة'],
+                        ['id' => 'ready', 'label' => 'جاهز للاستلام'],
+                        ['id' => 'collected', 'label' => 'تم التسليم'],
                     ];
                     
-                    // Basic mapping logic for demo - in production this would be more robust
-                    $currentStatus = $application->status;
-                    $completedSteps = [];
-                    if (str_contains($currentStatus, 'تمت الطباعة')) $completedSteps = ['printed'];
-                    if (str_contains($currentStatus, 'انتظار') || str_contains($currentStatus, 'ترحيل')) $completedSteps = ['printed', 'waiting'];
-                    if (str_contains($currentStatus, 'وصل') || str_contains($currentStatus, 'جاهز')) $completedSteps = ['printed', 'waiting', 'arrived'];
-                    if (str_contains($currentStatus, 'تسليم') || str_contains($currentStatus, 'استلام')) $completedSteps = ['printed', 'waiting', 'arrived', 'delivered'];
+                    $statusOrder = ['pending', 'processing', 'ready', 'collected', 'cancelled', 'archived'];
+                    $currentIndex = array_search($application->status, $statusOrder);
+                    $completedSteps = array_slice($statusOrder, 0, ($currentIndex !== false ? $currentIndex + 1 : 0));
                 @endphp
 
                 @foreach($steps as $index => $step)
                     <div class="timeline-step">
-                        <div class="timeline-dot {{ in_array($step['id'], $completedSteps) ? 'active' : '' }} {{ end($completedSteps) == $step['id'] ? 'current' : '' }}">
+                        <div class="timeline-dot {{ in_array($step['id'], $completedSteps) ? 'active' : '' }} {{ $application->status == $step['id'] ? 'current' : '' }}">
                             @if(in_array($step['id'], $completedSteps))
                                 <svg width="18" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -84,15 +86,15 @@
                             @endif
                         </div>
                         
-                        <div style="text-align: right;">
+                        <div style="text-align: right; flex: 1;">
                             <div style="font-family: var(--cairo); font-weight: 700; font-size: 16px; color: {{ in_array($step['id'], $completedSteps) ? 'var(--accent)' : '#0f172a' }};">
                                 {{ $step['label'] }}
                             </div>
                             <div style="font-size: 14px; color: #9ca3af;">
                                 @php
-                                    $update = $application->statusUpdates->first(fn($u) => str_contains($u->status, $step['label']));
+                                    $update = $application->statusUpdates->where('status', $step['id'])->first();
                                 @endphp
-                                {{ $update ? $update->created_at->format('d/m/Y') : '--/--/----' }}
+                                {{ $update ? $update->created_at->format('Y/m/d') : '--/--/----' }}
                             </div>
                         </div>
                     </div>

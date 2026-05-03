@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\PassportApplication;
-use App\Models\Branch;
 use App\Actions\Passport\CreateApplicationAction;
 use App\Actions\Passport\UpdateStatusAction;
-use App\Services\SearchService;
+use App\Http\Controllers\Controller;
+use App\Models\Branch;
+use App\Models\PassportApplication;
 use App\Services\MediaService;
+use App\Services\SearchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PassportApplicationController extends Controller
 {
     protected $searchService;
+
     protected $mediaService;
 
     public function __construct(
@@ -27,11 +29,24 @@ class PassportApplicationController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
+        $status = $request->input('status');
+
+        $applicationsQuery = PassportApplication::with(['branch', 'user']);
+
         if ($query) {
-            $applications = $this->searchService->search($query);
-        } else {
-            $applications = PassportApplication::with(['branch', 'user'])->latest()->paginate(15);
+            $applicationsQuery->where(function ($q) use ($query) {
+                $q->where('full_name', 'LIKE', "%{$query}%")
+                    ->orWhere('tracking_number', 'LIKE', "%{$query}%")
+                    ->orWhere('serial_number', 'LIKE', "%{$query}%")
+                    ->orWhere('national_id', 'LIKE', "%{$query}%");
+            });
         }
+
+        if ($status) {
+            $applicationsQuery->where('status', $status);
+        }
+
+        $applications = $applicationsQuery->latest()->paginate(15)->withQueryString();
 
         return view('admin.applications.index', compact('applications'));
     }
@@ -39,17 +54,31 @@ class PassportApplicationController extends Controller
     public function show(PassportApplication $application)
     {
         $application->load(['branch', 'pickupBranch', 'statusUpdates.updater']);
+
         return view('admin.applications.show', compact('application'));
     }
 
     public function edit(PassportApplication $application)
     {
+        // Status Locking: Prevent editing if ready or collected
+        if (in_array($application->status, ['ready', 'collected'])) {
+            return redirect()->route('admin.applications.index')
+                ->with('error', 'لا يمكن تعديل الطلب بعد وصوله لمرحلة الجاهزية أو التسليم.');
+        }
+
         $branches = Branch::all();
+
         return view('admin.applications.edit', compact('application', 'branches'));
     }
 
     public function update(Request $request, PassportApplication $application)
     {
+        // Status Locking: Prevent update if ready or collected
+        if (in_array($application->status, ['ready', 'collected'])) {
+            return redirect()->route('admin.applications.index')
+                ->with('error', 'لا يمكن تعديل بيانات الطلب في هذه المرحلة.');
+        }
+
         $data = $request->validate([
             'full_name' => 'required|string|max:255',
             'mother_name' => 'nullable|string|max:255',
@@ -74,6 +103,7 @@ class PassportApplicationController extends Controller
     public function create()
     {
         $branches = Branch::all();
+
         return view('admin.applications.create', compact('branches'));
     }
 
@@ -88,6 +118,7 @@ class PassportApplicationController extends Controller
             'address' => 'nullable|string',
             'branch_id' => 'required|exists:branches,id',
             'pickup_branch_id' => 'nullable|exists:branches,id',
+            'status' => 'nullable|in:pending,processing,ready,collected',
             'photo' => 'nullable|image|max:2048',
         ]);
 
@@ -97,7 +128,15 @@ class PassportApplicationController extends Controller
             $data['photo_path'] = $this->mediaService->uploadPhoto($request->file('photo'));
         }
 
-        $createAction->execute($data);
+        try {
+            $createAction->execute($data);
+        } catch (\Exception $e) {
+            // Clean up image if database transaction fails
+            if (isset($data['photo_path'])) {
+                Storage::delete($data['photo_path']);
+            }
+            throw $e;
+        }
 
         return redirect()->route('admin.applications.index')->with('success', 'Application created successfully.');
     }

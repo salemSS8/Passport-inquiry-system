@@ -24,7 +24,7 @@ class PassportApplication extends Model
         'address',
         'status',
         'photo_path',
-        'tracking_number'
+        'tracking_number',
     ];
 
     protected $casts = [
@@ -49,5 +49,27 @@ class PassportApplication extends Model
     public function statusUpdates(): HasMany
     {
         return $this->hasMany(StatusUpdate::class);
+    }
+
+    /**
+     * Arabic labels for application statuses.
+     *
+     * @var array<string, string>
+     */
+    public const STATUS_LABELS = [
+        'pending' => 'قيد الانتظار',
+        'processing' => 'جاري المعالجة',
+        'ready' => 'جاهز للاستلام',
+        'collected' => 'تم التسليم',
+        'cancelled' => 'ملغي',
+        'archived' => 'مؤرشف',
+    ];
+
+    /**
+     * Get the Arabic label for the current status.
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return self::STATUS_LABELS[$this->status] ?? $this->status;
     }
 }
