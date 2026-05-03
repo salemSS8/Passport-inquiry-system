@@ -20,7 +20,10 @@
 
                 <div class="form-group">
                     <label for="full_name">الاسم الكامل (كما هو في البطاقة الشخصية)</label>
-                    <input type="text" name="full_name" id="full_name" class="form-input" required placeholder="أدخل الاسم الرباعي واللقب" value="{{ old('full_name') }}">
+                    <input type="text" name="full_name" id="full_name" class="form-input @error('full_name') is-invalid @enderror" required placeholder="أدخل الاسم الرباعي واللقب" value="{{ old('full_name') }}">
+                    @error('full_name')
+                        <div style="color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem;">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -44,7 +47,10 @@
 
                 <div class="form-group">
                     <label for="national_id">الرقم الوطني (11 خانة)</label>
-                    <input type="text" name="national_id" id="national_id" class="form-input" required placeholder="001-XXXXXX-X" value="{{ old('national_id') }}">
+                    <input type="text" name="national_id" id="national_id" class="form-input @error('national_id') is-invalid @enderror" required placeholder="001-XXXXXX-X" value="{{ old('national_id') }}">
+                    @error('national_id')
+                        <div style="color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem;">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -92,8 +98,8 @@
                     <div class="form-group">
                         <label for="status">حالة الطلب</label>
                         <select name="status" id="status" class="form-input" required>
-                            @foreach(\App\Models\PassportApplication::STATUS_LABELS as $value => $label)
-                                <option value="{{ $value }}" {{ old('status', 'pending') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @foreach(\App\Models\PassportApplication::STATUS_LABELS as $statusKey => $label)
+                                <option value="{{ $statusKey }}" {{ old('status', 'pending') == $statusKey ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>

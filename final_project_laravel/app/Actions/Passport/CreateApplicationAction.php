@@ -16,6 +16,12 @@ class CreateApplicationAction
      */
     public function execute(array $data): PassportApplication
     {
+        // Defensive fix: Map Arabic status labels back to English keys if sent
+        $statusMap = array_flip(PassportApplication::STATUS_LABELS);
+        if (isset($data['status']) && isset($statusMap[$data['status']])) {
+            $data['status'] = $statusMap[$data['status']];
+        }
+
         return DB::transaction(function () use ($data) {
             // Duplicate Entry Check: Reject if there is an active application for this National ID
             $exists = PassportApplication::where('national_id', $data['national_id'])
@@ -23,10 +29,9 @@ class CreateApplicationAction
                 ->exists();
 
             if ($exists) {
-                throw new ValidationException(
-                    Validator::make([], []),
-                    ['national_id' => 'يوجد طلب نشط مسبقاً لهذا الرقم الوطني.']
-                );
+                throw ValidationException::withMessages([
+                    'national_id' => 'يوجد طلب نشط مسبقاً لهذا الرقم الوطني.'
+                ]);
             }
 
             $data['tracking_number'] ??= 'TRK-'.strtoupper(Str::random(10));

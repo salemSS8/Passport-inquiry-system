@@ -57,13 +57,6 @@ class PassportApplication extends Model
      * @var array<string, string>
      */
     public const STATUS_LABELS = [
-        'قيد الانتظار' => 'قيد الانتظار',
-        'جاري المعالجة' => 'جاري المعالجة',
-        'جاهز للاستلام' => 'جاهز للاستلام',
-        'تم التسليم' => 'تم التسليم',
-        'ملغي' => 'ملغي',
-        'مؤرشف' => 'مؤرشف',
-        // Fallbacks for older records
         'pending' => 'قيد الانتظار',
         'processing' => 'جاري المعالجة',
         'ready' => 'جاهز للاستلام',
